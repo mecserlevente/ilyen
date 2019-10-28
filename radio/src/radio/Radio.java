@@ -16,14 +16,15 @@ import java.util.Scanner;
  */
 public class Radio {
 
-public static boolean szame(String szo){
+public static boolean szame(char szo){
 boolean valasz=true;
-for (int i = 1; i < Integer.parseInt(szo); i++) {
-if (szo.charAt(i)<'0' || szo.charAt(i)>'9') {
- valasz=false;
- 
-        }
+String szo2;
+szo2 = "" + szo;
+for (int i = 0; i < szo2.length(); i++) {
+    if (szo2.charAt(i)<'0' || szo2.charAt(i)>'9') {
+        valasz=false;
     }
+}
 return valasz;
 }    
    
@@ -100,6 +101,8 @@ return valasz;
     System.out.println("");
     
     System.out.println("5. feladat megoldása");
+    
+    
     String dekodoltszoveg;
     for (int i = 1; i <= 11; i++) {
         dekodoltszoveg = "";
@@ -121,59 +124,72 @@ return valasz;
             }
         }
         System.out.println(i+".napi szöveg: "+dekodoltszoveg);
+        
     }
 
     
+//Olvassa be egy nap és egy rádióamatőr sorszámát,
+//majd írja a képernyőre a megfigyelt egyedek számát (a kifejlett és kölyök egyedek számának összegét)!
+//Ha nem volt ilyen feljegyzés, a „Nincs ilyen feljegyzés” szöveget jelenítse meg!
+//Ha nem volt megfigyelt egyed vagy számuk nem állapítható meg, a „Nincs információ” szöveget jelenítse meg! 
+//Amennyiben egy számot közvetlenül # jel követ, akkor a számot tekintse nem megállapíthatónak
+
         System.out.println("7.feladat");
         Scanner napb=new Scanner(System.in);
-        String napbe=napb.nextLine();
+        int napbe=napb.nextInt();
         Scanner radiosb=new Scanner(System.in);
-        String radiosbe=radiosb.nextLine();
+        int radiosbe=radiosb.nextInt();
         boolean megtalaltam=false;
         
         String tempstr;
-        int ffarkasok;
+        String ffarkasok;
+        String kfarkasok;
+        ffarkasok = "";
+        kfarkasok = "";
+        int j;
         for (int i = 0; i < tombsorszam; i++) {
-            if (napbe==tomb[i][0] && radiosbe==tomb[i][1]) {
+            if (napbe==Integer.parseInt(tomb[i][0]) && radiosbe==Integer.parseInt(tomb[i][1])) {
                 megtalaltam = true;
-                ffarkasok = 0;
  
-                tempstr = tempstr + tomb[i][4].charAt(0);
-                if (szame(tempstr)) {
-                    for (int j = 1; j < 90; j++) {
+                tempstr = "";
+                if (szame(tomb[i][4].charAt(0))) {
+                    tempstr = tempstr + tomb[i][4].charAt(0);  
+                    for ( j = 1; j < 90; j++) {
                         if (szame(tomb[i][4].charAt(j))) {
                             tempstr = tempstr + tomb[i][4].charAt(j);
                         }else{
                             break;
                         }
                     }
-                    ffarkasok = Integer.parseInt(tempstr);
-                    j-edik karakter micsoda???
-                    
-                }else{
-                    System.out.println("Nincs információ.");
+                    ffarkasok = tempstr;
+
+                    if (tomb[i][4].charAt(j)=='#'|| tomb[i][4].charAt(j)=='/') {
+                        tempstr = "";
+                        for (j = j+1;  j < 90; j++) {
+                            if (szame(tomb[i][4].charAt(j))) {
+                                tempstr = tempstr + tomb[i][4].charAt(j);  
+                            }else{
+                                    break;
+                            }
+    
+                        }
+                        kfarkasok = tempstr;
+                                                
+                    }
+                                            
                 }
-                
-
-
-
-                
-                if (tomb[i][4].indexOf(0)>'9'||tomb[i][4].indexOf(0)<'0') {
-                        System.out.println("nem állapítható meg");
-            }else{
-                    
-                }
-            
-            
-            
             
             }
         }
-        if (megtalaltam==false) {
+        if (megtalaltam==true) {
+            if (ffarkasok.length()>0 && kfarkasok.length() > 0) {
+                int osszesfarkas=Integer.parseInt(ffarkasok) + Integer.parseInt(kfarkasok);
+                System.out.println("Farkasok száma: " + osszesfarkas);
+            }else{
+                System.out.println("Nincs információ.");
+            }
+        }else{
             System.out.println("Nincs ilyen feljegyzés!");
-        }
-       
-    
-        
+        }        
     }        
 }
