@@ -6,7 +6,9 @@
 package footgolf;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +26,7 @@ public class Footgolf {
     Scanner bekertnev = new Scanner(System.in);
 
         ArrayList<golfosztaly> lista = new ArrayList<golfosztaly>();
+        ArrayList<egyesuletosztaly> egyesuletlista=new ArrayList<egyesuletosztaly>();
         beolvas(lista);
         System.out.println("3. feladat: Versenyzők száma: " + lista.size());
         System.out.println("4. feladat: " + String.format("%.2f ", feladat4(lista)) + "%");
@@ -32,8 +35,63 @@ public class Footgolf {
        
         String be=bekertnev.nextLine();
         System.out.println( feladat5(lista, be)); 
-//        feladat5(lista, "Sain Antal");
+        feladat5(lista, "Sain Antal");
+        
+        int max=0;
+        int maxsorszam=0;
+        for (int i = 0; i < lista.size(); i++) {
+            if (lista.get(i).getKategoria().equals("Noi")) {
+              if( feladat5(lista,lista.get(i).getVersenyzonev())>max){
+              max=feladat5(lista,lista.get(i).getVersenyzonev());
+              maxsorszam=i;
+              }
+            }
+        }
+        
+        System.out.println("6. feladat: A bajnok női versenyző");                
+        System.out.println(lista.get(maxsorszam).getVersenyzonev());
+        System.out.println(lista.get(maxsorszam).getEgyesulet());
+        System.out.println("Összpont "+max);
 
+        try{
+        
+            PrintWriter pr=new PrintWriter(new FileWriter("osszpontFF.txt"));
+            for (int i = 0; i < lista.size(); i++) {
+                if (lista.get(i).getKategoria().equals("Felnott ferfi")) {
+                    pr.print(lista.get(i).getVersenyzonev()+";");
+                    pr.print(feladat5(lista,lista.get(i).getVersenyzonev())+"\n");
+                }
+            }
+            
+            pr.close();
+        }catch(IOException e){System.out.println(e);}
+        
+       
+        System.out.println("8. feladat - statisztika");
+        boolean megtalaltam;
+        for (int i = 0; i < lista.size(); i++) {
+            megtalaltam = false;
+            for (int j = 0; j < egyesuletlista.size(); j++) {
+//                System.out.println("*"+lista.get(i).getEgyesulet()+"*");
+//                System.out.println("/"+egyesuletlista.get(j).getEgyesulet()+"/");    
+                if (lista.get(i).getEgyesulet().equals(egyesuletlista.get(j).getEgyesulet())){
+                    egyesuletlista.get(j).setLetszam( egyesuletlista.get(j).getLetszam()+1 );
+                    megtalaltam = true; break;
+                }
+            }
+            if (megtalaltam == false) {
+           egyesuletlista.add(new egyesuletosztaly(lista.get(i).getEgyesulet(), 1));
+
+            }
+        }
+        for (int i = 0; i < egyesuletlista.size(); i++) {
+            if (egyesuletlista.get(i).getLetszam()>2 && (!egyesuletlista.get(i).getEgyesulet().equals("n.a."))) {
+                System.out.println(egyesuletlista.get(i).getEgyesulet()+"-"+egyesuletlista.get(i).getLetszam());
+            }
+        }
+       
+       
+        
     }
 
     public static void beolvas(ArrayList<golfosztaly> lista) {
@@ -118,4 +176,6 @@ public class Footgolf {
 return osszpontszam;
     }
 
+    
+    
 }
