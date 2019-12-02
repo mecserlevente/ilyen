@@ -21,6 +21,7 @@ public class LezerLoveszet {
      */
     public static void main(String[] args) {
         ArrayList<JatekosLovese>lista=new ArrayList<JatekosLovese>();
+        ArrayList<jatekosok>jatekoslista=new ArrayList<jatekosok>();
         beolvas(lista);
         System.out.println("5. feladat: Lövések száma: "+lista.size()+" db");
 //        System.out.println(JatekosLovese.Tavolsag(3.0, 4.0));
@@ -53,6 +54,52 @@ public class LezerLoveszet {
         
         Long jatekosszam=lista.stream().map(mapper -> mapper.getNev()).distinct().count();
         System.out.println("10. feladat: Játékosok száma: "+jatekosszam);
+      
+        boolean megtalaltam;
+        for (int i = 0; i < lista.size(); i++) {
+            megtalaltam = false;
+            for (int j = 0; j < jatekoslista.size(); j++) {
+//                System.out.println("*"+lista.get(i).getEgyesulet()+"*");
+//                System.out.println("/"+jatekoslista.get(j).getEgyesulet()+"/");    
+
+    
+                if (lista.get(i).getNev().equals(jatekoslista.get(j).getNev2())){
+                    jatekoslista.get(j).setLovesszam(jatekoslista.get(j).getLovesszam() + 1 );
+                    jatekoslista.get(j).setPontszam2(jatekoslista.get(j).getPontszam2() + JatekosLovese.Pontszam(lista.get(i).getLovesx(), lista.get(i).getLovesy()));
+                    
+                    megtalaltam = true; break;
+                }
+            }
+            if (megtalaltam == false) {
+          jatekoslista.add(new jatekosok(lista.get(i).getNev(),1,lista.get(i).getPontszam()));
+
+            }
+        }
+        System.out.println("11. feladat: Lövések száma: ");
+        for (int i = 0; i < jatekoslista.size(); i++) {
+           
+                System.out.println(jatekoslista.get(i).getNev2()+" - "+jatekoslista.get(i).getLovesszam()+" db");
+            
+        }
+        System.out.println("12. feladat");
+        for (int i = 0; i < jatekoslista.size(); i++) {
+           
+            System.out.println(jatekoslista.get(i).getNev2()+" - "+jatekoslista.get(i).getPontszam2()/jatekoslista.get(i).getLovesszam());
+           
+        }
+        double max=0.0;
+        int maxindex=0;
+        for (int i = 0; i < jatekoslista.size(); i++) {
+            if ((jatekoslista.get(i).getPontszam2()/jatekoslista.get(i).getLovesszam())>max) {
+                max=(jatekoslista.get(i).getPontszam2()/jatekoslista.get(i).getLovesszam());
+                maxindex=i;  
+            }  
+       
+        }
+        System.out.println("Maxpontszám: " + lista.get(maxindex).getNev());    
+            
+      
+        
         
     }
 
