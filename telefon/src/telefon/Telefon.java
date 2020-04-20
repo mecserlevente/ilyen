@@ -7,6 +7,9 @@ package telefon;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -31,7 +34,7 @@ public class Telefon {
 
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
         ArrayList<hivasadatok> lista = new ArrayList<>();
         beolvas(lista);
         System.out.println("3. feladat");
@@ -94,8 +97,52 @@ public class Telefon {
             }
         }
 
+        LocalTime sikeresbeszedveg = LocalTime.of(0, 0, 0);
+        LocalTime utolsoelottiveg = LocalTime.of(0, 0, 0);
+        Boolean utolsoelotti = false;
+        for (int i = 0; i < lista.size(); i++) {
+            if (lista.get(i).veg.compareTo(LocalTime.of(8, 0, 0)) > 0) {
+//                System.out.println(lista.get(i).kezdet + "-"+lista.get(i).veg);
+                if (lista.get(i).veg.compareTo(sikeresbeszedveg) > 0) {
+                    sikeresbeszedveg = lista.get(i).veg;
+                    if (sikeresbeszedveg.compareTo(LocalTime.of(12, 0, 0)) > 0) {
+                        if (utolsoelotti == false) {
+                            utolsoelotti = true;
+                            utolsoelottiveg = sikeresbeszedveg;
+                        } else {
+                            System.out.println("megvan az utolsó");
+                            System.out.println(lista.get(i).kezdet);
+                            System.out.println(utolsoelottiveg.toSecondOfDay() - lista.get(i).kezdet.toSecondOfDay());
+                            break;
+                            
+                        }
+                        
+                    }
+
+                }
+
+            }
+
+        }
         
         
+//        System.out.println(utolsoelottiveg);
+
+    PrintWriter pr=new PrintWriter(new FileWriter("sikeres.txt"));
+
+        sikeresbeszedveg=LocalTime.of(8, 0, 0);
+        for (int i = 0; i < lista.size(); i++) {
+            if (lista.get(i).veg.compareTo(LocalTime.of(8, 0, 0)) >= 0 && lista.get(i).kezdet.compareTo(LocalTime.of(12, 0, 0)) <= 0) {
+                if (lista.get(i).veg.compareTo(sikeresbeszedveg) > 0) {
+                    pr.print(i+1 + " " + sikeresbeszedveg.getHour()+" "+sikeresbeszedveg.getMinute()+" " + sikeresbeszedveg.getSecond()+" "
+                            + lista.get(i).veg.getHour()+" "+lista.get(i).veg.getMinute()+" "+lista.get(i).veg.getSecond()+"\n");
+                    sikeresbeszedveg = lista.get(i).veg;
+                }
+            }
+            
+        }
+pr.close();
+
     }
 
     public static void beolvas(ArrayList<hivasadatok> lista) throws FileNotFoundException {
@@ -122,4 +169,5 @@ public class Telefon {
 
         return masodp;
     }
+     
 }
